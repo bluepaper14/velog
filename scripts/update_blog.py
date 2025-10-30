@@ -1,6 +1,7 @@
 import feedparser
 import git
 import os
+import subprocess
 
 # ✅ Velog RSS 주소 (지현님 계정)
 rss_url = 'https://v2.velog.io/rss/@bluepaper14'
@@ -15,6 +16,14 @@ if not os.path.exists(posts_dir):
 
 # Git repository 로드
 repo = git.Repo(repo_path)
+
+# ✅ 커밋 전 사용자 정보 설정
+# (GitHub Secrets에서 GIT_USERNAME, GIT_EMAIL이 세팅되어 있다면 아래 값으로 자동 적용)
+git_username = os.environ.get("GIT_USERNAME", "github-actions[bot]")
+git_email = os.environ.get("GIT_EMAIL", "github-actions[bot]@users.noreply.github.com")
+
+subprocess.run(["git", "config", "user.name", git_username])
+subprocess.run(["git", "config", "user.email", git_email])
 
 # RSS 피드 파싱
 feed = feedparser.parse(rss_url)
